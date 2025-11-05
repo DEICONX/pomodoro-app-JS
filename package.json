@@ -1,0 +1,18 @@
+{
+  "name": "pomodoro-webapp",
+  "version": "1.0.0",
+  "description": "Simple Pomodoro Timer for DevOps Learning",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "npx http-server src -p 8080 -o",
+    "build": "mkdir -p dist && cp -r src/* dist/",
+    "test": "echo \"Tests will be added\" && exit 0",
+    "clean": "rm -rf dist node_modules"
+  },
+  "keywords": ["pomodoro", "timer", "productivity"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

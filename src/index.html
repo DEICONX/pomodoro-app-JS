@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pomodoro Timer</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="timer-display">
+            <div class="circular-progress">
+                <svg class="progress-ring" width="280" height="280">
+                    <circle class="progress-ring-background" cx="140" cy="140" r="130"/>
+                    <circle class="progress-ring-circle" cx="140" cy="140" r="130"/>
+                </svg>
+                <div class="timer-content">
+                    <div id="timer">25:00</div>
+                    <div id="session-type">Work Session</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" class="btn btn-primary">Start</button>
+            <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+            <button id="resetBtn" class="btn btn-secondary">Reset</button>
+            <button id="skipBtn" class="btn btn-secondary">Skip</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Completed:</span>
+                <span id="completedCount" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <div class="settings">
+            <h3>Settings</h3>
+            <div class="setting-item">
+                <label for="workDuration">Work (min):</label>
+                <input type="number" id="workDuration" value="25" min="1" max="60">
+            </div>
+            <div class="setting-item">
+                <label for="shortBreak">Short Break (min):</label>
+                <input type="number" id="shortBreak" value="5" min="1" max="30">
+            </div>
+            <div class="setting-item">
+                <label for="longBreak">Long Break (min):</label>
+                <input type="number" id="longBreak" value="15" min="1" max="60">
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
