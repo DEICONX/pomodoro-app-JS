@@ -37,6 +37,7 @@ pipeline {
             steps {
                 echo '🔍 Running SonarQube static analysis...'
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
+                    sh 'export PATH="$PATH:$(pwd)/sonar-scanner-5.0.1.3006-linux/bin"'
                     sh '''
                         sonar-scanner \
                           -Dsonar.projectKey=pomodoro-app-js \
