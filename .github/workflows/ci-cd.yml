@@ -89,49 +89,35 @@ jobs:
           path: version.txt
 
   deploy:
-    name: Deploy to Nginx
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    - name: 🚀 Deploy to Nginx Server
+  uses: appleboy/ssh-action@v1.0.0
+  with:
+    host: ${{ env.NGINX_SERVER }}
+    username: ${{ secrets.NGINX_SSH_USER }}
+    key: ${{ secrets.PEM_CRED }}
+    envs: NEXUS_URL,NEXUS_REPO,NEXUS_GROUP,NEXUS_ARTIFACT,NGINX_WEB_ROOT
+    script: |
+      set -e
+      echo "🔐 SSH connection established"
+      cd /tmp
+      rm -f *.tar.gz
 
-    steps:
-      - name: 📥 Download Version Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: version
+      VERSION="0.0.${{ github.run_number }}"
+      TARBALL="${NEXUS_ARTIFACT}-${VERSION}.tar.gz"
+      DOWNLOAD_URL="${NEXUS_URL}/repository/${NEXUS_REPO}/${NEXUS_GROUP}/${NEXUS_ARTIFACT}/${VERSION}/${TARBALL}"
 
-      - name: 📝 Read Version
-        id: version
-        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_OUTPUT
+      echo "⬇️ Downloading tarball from: $DOWNLOAD_URL"
+      curl -f -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} -O "$DOWNLOAD_URL"
 
-      - name: 🚀 Deploy to Nginx Server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ env.NGINX_SERVER }}
-          username: ${{ secrets.NGINX_SSH_USER }}
-          key: ${{ secrets.PEM_CRED }}
-          envs: NEXUS_URL,NEXUS_REPO,NEXUS_GROUP,NEXUS_ARTIFACT,NGINX_WEB_ROOT
-          script: |
-            set -e
-            cd /tmp
-            rm -f *.tar.gz
+      if [[ ! -f "$TARBALL" ]]; then
+        echo "❌ Download failed!"
+        exit 1
+      fi
 
-            VERSION="${{ steps.version.outputs.VERSION }}"
-            TARBALL="${NEXUS_ARTIFACT}-${VERSION}.tar.gz"
-            DOWNLOAD_URL="${NEXUS_URL}/repository/${NEXUS_REPO}/${NEXUS_GROUP}/${NEXUS_ARTIFACT}/${VERSION}/${TARBALL}"
+      echo "🚀 Deploying to Nginx..."
+      sudo mkdir -p ${NGINX_WEB_ROOT}
+      sudo rm -rf ${NGINX_WEB_ROOT}/*
+      sudo tar -xzf "$TARBALL" -C ${NGINX_WEB_ROOT}/
+      sudo chown -R www-data:www-data ${NGINX_WEB_ROOT}
 
-            echo "⬇️ Downloading tarball from: $DOWNLOAD_URL"
-            curl -f -u ${{ secrets.NEXUS_USERNAME }}:${{ secrets.NEXUS_PASSWORD }} -O "$DOWNLOAD_URL"
-
-            if [[ ! -f "$TARBALL" ]]; then
-              echo "❌ Download failed!"
-              exit 1
-            fi
-
-            echo "🚀 Deploying to Nginx..."
-            sudo mkdir -p ${NGINX_WEB_ROOT}
-            sudo rm -rf ${NGINX_WEB_ROOT}/*
-            sudo tar -xzf "$TARBALL" -C ${NGINX_WEB_ROOT}/
-            sudo chown -R www-data:www-data ${NGINX_WEB_ROOT}
-
-            echo "✅ Deployment successful! Application live on Nginx!"
+      echo "✅ Deployment successful! Application live on Nginx!"
