@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 env:
-  SONARQUBE_URL: http://98.93.153.62:9000
-  NEXUS_URL: http://54.196.221.116:8081
+  SONARQUBE_URL: http://54.152.3.51:9000
+  NEXUS_URL: http://54.172.49.232:8081
   NEXUS_REPO: js
   NEXUS_GROUP: com/web/pomodoro
   NEXUS_ARTIFACT: pomodoro-app
-  NGINX_SERVER: 54.173.136.70
+  NGINX_SERVER: 54.86.138.246
   NGINX_WEB_ROOT: /var/www/html
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
           ls -lh dist/ || true
 
       - name: 🔍 SonarQube Analysis
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: sonarsource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ env.SONARQUBE_URL }}
