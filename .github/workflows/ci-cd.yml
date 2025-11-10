@@ -19,7 +19,7 @@ env:
 jobs:
   build-and-test:
     name: Build, Test & Analyze
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📦 Checkout Code
@@ -47,7 +47,7 @@ jobs:
           echo "✅ Build Completed!"
           ls -lh dist/ || true
 
-      - name: 🔍 SonarQube Analysis (Local Scanner)
+      - name: 🔍 SonarQube Analysis
         run: |
           /home/ubuntu/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
             -Dsonar.projectKey=pomodoro-app-js \
@@ -107,7 +107,7 @@ jobs:
         with:
           host: ${{ env.NGINX_SERVER }}
           username: ${{ secrets.NGINX_SSH_USER }}
-          key: ${{ secrets.NGINX_SSH_KEY }}
+          key: ${{ secrets.PEM_CRED }}
           envs: NEXUS_URL,NEXUS_REPO,NEXUS_GROUP,NEXUS_ARTIFACT,NGINX_WEB_ROOT
           script: |
             set -e
