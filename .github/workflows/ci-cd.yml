@@ -19,7 +19,7 @@ env:
 jobs:
   build-and-test:
     name: Build, Test & Analyze
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: 📦 Checkout Code
@@ -47,18 +47,16 @@ jobs:
           echo "✅ Build Completed!"
           ls -lh dist/ || true
 
-      - name: 🔍 SonarQube Analysis
-        uses: sonarsource/sonarqube-scan-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ env.SONARQUBE_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=pomodoro-app-js
-            -Dsonar.projectName="Pomodoro App JS"
-            -Dsonar.projectVersion=${{ github.run_number }}
-            -Dsonar.sources=src
-            -Dsonar.sourceEncoding=UTF-8
+      - name: 🔍 SonarQube Analysis (Local Scanner)
+        run: |
+          /home/ubuntu/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
+            -Dsonar.projectKey=pomodoro-app-js \
+            -Dsonar.projectName="Pomodoro App JS" \
+            -Dsonar.projectVersion=${{ github.run_number }} \
+            -Dsonar.sources=src \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.host.url=${{ env.SONARQUBE_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: 📦 Package Artifact
         run: |
