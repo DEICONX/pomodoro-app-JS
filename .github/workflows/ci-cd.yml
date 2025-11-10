@@ -47,18 +47,16 @@ jobs:
           echo "✅ Build Completed!"
           ls -lh dist/ || true
 
-      - name: 🔍 SonarQube Analysis
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ env.SONARQUBE_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=pomodoro-app-js
-            -Dsonar.projectName="Pomodoro App JS"
-            -Dsonar.projectVersion=${{ github.run_number }}
-            -Dsonar.sources=src
-            -Dsonar.sourceEncoding=UTF-8
+      - name: 🔍 SonarQube Analysis (Manual)
+        run: |
+          /home/ubuntu/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
+            -Dsonar.projectKey=pomodoro-app-js \
+            -Dsonar.projectName="Pomodoro App JS" \
+            -Dsonar.projectVersion=${{ github.run_number }} \
+            -Dsonar.sources=src \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.host.url=${{ env.SONARQUBE_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: 📦 Package Artifact
         run: |
@@ -135,4 +133,3 @@ jobs:
             sudo chown -R www-data:www-data ${NGINX_WEB_ROOT}
 
             echo "✅ Deployment successful! Application live on Nginx!"
-
